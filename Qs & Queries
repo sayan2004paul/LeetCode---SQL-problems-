@@ -104,3 +104,19 @@ DISTINCT a.num AS 'ConsecutiveNums'
       WHERE  
        a.num=b.num 
         AND c.num=b.num
+
+
+181. Employees Earning More Than Their Managers - Write a solution to find the employees who earn more than their managers.
+
+WITH CTE AS (SELECT 
+ b.name AS 'emp',b.salary AS 'emp_sal' , a.name AS 'mang' , a.salary AS 'mng_sal'
+FROM 
+  Employee a 
+   JOIN Employee b 
+    ON b.managerId =a.id )
+
+    SELECT 
+     emp AS 'Employee'
+      FROM CTE 
+       WHERE 
+        emp_sal>mng_sal
