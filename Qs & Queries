@@ -158,3 +158,41 @@ c.name AS 'Customers'
     ON c.id=o.customerId
      WHERE 
       o.customerId IS NULL
+
+
+184. Department Highest Salary : Write a solution to find employees who have the highest salary in each of the departments.
+
+# Write your MySQL query statement below
+WITH CTE AS (SELECT 
+ d.name AS 'dept' , e.name AS 'emp' , e.salary  
+ FROM 
+  Employee e 
+   JOIN 
+    Department d 
+     ON e.departmentId=d.id),
+
+     CTE1 AS (SELECT 
+      dept , emp , salary , DENSE_RANK()OVER(PARTITION BY dept ORDER BY salary DESC) AS rnk 
+      FROM CTE )
+       
+       SELECT 
+        dept AS 'Department' , emp AS 'Employee',salary AS 'Salary'
+         FROM CTE1 
+          WHERE 
+           rnk=1
+
+optimised :
+
+WITH Ranked AS (
+    SELECT 
+        d.name AS Department,
+        e.name AS Employee,
+        e.salary AS Salary,
+        DENSE_RANK() OVER (PARTITION BY d.name ORDER BY e.salary DESC) AS rnk
+    FROM Employee e
+    JOIN Department d ON e.departmentId = d.id
+)
+SELECT Department, Employee, Salary
+FROM Ranked
+WHERE rnk = 1;
+
