@@ -196,3 +196,48 @@ SELECT Department, Employee, Salary
 FROM Ranked
 WHERE rnk = 1;
 
+
+
+185. Department Top Three Salaries - A company's executives are interested in seeing who earns the most money in each of the company's departments. A high earner in a department is an employee who has a salary in the top three unique salaries for that department.
+Write a solution to find the employees who are high earners in each of the departments.
+
+WITH CTE AS (SELECT d.name AS 'dept', e.name AS 'emp',  e.salary AS 'salary' , DENSE_RANK()OVER(PARTITION BY d.name ORDER BY  e.salary DESC ) AS 'rnk'
+FROM 
+ Employee e 
+  JOIN 
+   Department d 
+    ON e.departmentId=d.id)
+
+    SELECT 
+     dept AS 'Department',emp AS 'Employee',salary AS 'Salary'
+      FROM CTE 
+       WHERE 
+        rnk <=3
+
+
+
+
+
+
+
+
+196. Delete Duplicate Emails - Write a solution to delete all duplicate emails, keeping only one unique email with the smallest id.
+For SQL users, please note that you are supposed to write a DELETE statement and not a SELECT one.
+For Pandas users, please note that you are supposed to modify Person in place.
+After running your script, the answer shown is the Person table. The driver will first compile and run your piece of code and then show the Person table. The final order of the Person table does not matter.
+
+
+
+DELETE 
+ FROM 
+  Person 
+   WHERE id NOT IN 
+    (
+        SELECT * FROM (
+
+            SELECT MIN(id)
+             FROM 
+              Person 
+               GROUP BY 
+                email) a
+        )
