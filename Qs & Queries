@@ -316,4 +316,19 @@ FROM
  Activity 
   GROUP BY 
    player_id
-  
+
+
+512. Game Play Analysis II - Write a SQL query that reports the device that is first logged in for each player.
+
+WITH CTE AS (SELECT 
+ player_id , device_id , event_date , 
+ DENSE_RANK()OVER(PARTITION BY player_id ORDER BY event_date) AS rnk 
+  FROM 
+   Activity )
+   
+   SELECT 
+    player_id , device_id 
+     FROM 
+      CTE 
+       WHERE 
+        rnk=1
