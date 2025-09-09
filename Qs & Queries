@@ -399,3 +399,60 @@ WITH fl AS (SELECT
       JOIN 
        Activity  a ON  f.player_id=a.player_id 
  
+
+
+
+
+
+AMAZON -  Maximize Prime Item Inventory : (EXCELLENT QS )
+
+WITH prime AS (SELECT 
+ SUM(square_footage) AS prime_area
+  FROM 
+   inventory 
+    WHERE 
+     item_type='prime_eligible'),
+     
+     non_prime AS (
+     SELECT 
+ SUM(square_footage) AS non_prime_area
+  FROM 
+   inventory 
+    WHERE 
+     item_type='not_prime'),
+    
+    
+    
+    prime_calc AS (SELECT 
+     FLOOR(500000/prime_area) AS prime_batches ,
+     (500000-( FLOOR(500000/prime_area))*prime_area) AS remaining
+      FROM 
+       prime
+       ),
+       
+       
+       non_prime_calc AS (
+       
+       SELECT 
+       GREATEST(1,FLOOR( p.remaining/np.non_prime_area)) AS non_prime_batches 
+        
+        FROM  
+         prime_calc p 
+          CROSS JOIN 
+           non_prime np
+       
+       )
+       
+       SELECT 
+        'prime_eligible' AS item_type , prime_batches  AS item_count
+         FROM 
+          prime_calc
+          
+          UNION ALL 
+           
+        SELECT 
+        'not_prime' AS item_type , non_prime_batches  
+         FROM 
+          non_prime_calc;
+       
+       
