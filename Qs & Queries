@@ -381,4 +381,21 @@ SELECT
     player_id , event_date , games_played 
     
 
-    
+
+550. Game Play Analysis IV : (good)
+
+
+WITH fl AS (SELECT 
+ player_id , MIN(event_date) AS first_log 
+  FROM 
+   Activity 
+    GROUP BY 
+     player_id )
+
+   SELECT 
+    ROUND((SUM(DATEDIFF(a.event_date,f.first_log)=1))/(COUNT(DISTINCT a.player_id)),2) AS fraction
+    FROM 
+     fl  f 
+      JOIN 
+       Activity  a ON  f.player_id=a.player_id 
+ 
